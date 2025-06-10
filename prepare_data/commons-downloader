@@ -1,0 +1,138 @@
+#!/bin/sh
+# Written in 2021–2023 by nytpu <alex [at] nytpu.com>
+#
+# To the extent possible under law, the author(s) have dedicated all copyright
+# and related and neighboring rights to this software to the public domain
+# worldwide. This software is distributed without any warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication along
+# with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+set -eu
+
+# easily print errors
+errx() {
+	printf "%s: %s\n" "$0" "$*" >&2
+	exit 1
+}
+
+usage() {
+	exec 1>&2
+	printf "Usage: %s [-chns] [-o outdir] [-q query]... [-r file] <category>\n\n" "$0"
+	printf "\t-c         Download all images in a given category.\n"
+	printf "\t-h         Display this help information.\n"
+	printf "\t-n         No output or progress information.\n"
+	printf "\t-o outdir  Download all images to the given directory (will be created).\n"
+	printf "\t-q query   Additional queries to add when downloading from a search.\n"
+	printf "\t-r file    Resume downloading URIs from a given file.\n"
+	printf "\t-s         Download all images from a search for the given category and queries.\n"
+	printf "\t-u agent   Change the user agent to use for requests.\n"
+	printf "\tcategory   The formal category name you wish to download from.\n"
+	exit 0
+}
+
+progress=true
+category=false # download from category
+search=false # download from search
+resume=false # resume existing download
+resumefile=""
+queries="" # search queries
+outdir="."
+useragent="commons-downloader/1.0 (https://sr.ht/~nytpu/commons-downloader/)"
+
+while getopts "chno:q:r:su:" opt; do
+	case "${opt}" in
+	c) category=true;;
+	h) usage;;
+	n) progress=false;;
+	o) outdir="${OPTARG}";;
+	q) queries="${queries}+OR+%22$(echo "${OPTARG}" | tr ' _' '+')%22";;
+	r)
+		resume=true
+		resumefile="${OPTARG}"
+		;;
+	s) search=true;;
+	u) useragent="${OPTARG}" ;;
+	?) exit 1;;
+	esac
+done
+shift $((OPTIND - 1))
+
+if ${category} || ${search} && ${resume}; then
+	errx "-r is exclusive with -c and -s!"
+elif ! ${category} && ! ${search} && ! ${resume}; then
+	errx "You must download from a category or search, or resume."
+fi
+
+urls=""
+
+if ${category}; then
+	${progress} && printf "Accessing category API...\n"
+
+	api="https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&generator=categorymembers&iiprop=url&gcmtype=file&gcmlimit=500&gcmtitle=Category%3A+$(echo "$*" | jq -sRr @uri)"
+	curapi="${api}"
+
+	page=0
+	while true; do
+		${progress} && printf "\rAPI Page %d..." "${page}"
+		page=$((page + 1))
+
+		resp="$(curl -A "${useragent}" --silent "${curapi}")"
+
+		urls="${urls} $(echo "${resp}" | jq '.query.pages[].imageinfo[].url' | sed -e 's/^"//' -e 's/"$//' | sed 's/"/\\"/')"
+		if echo "${resp}" | grep -q '"gcmcontinue":'; then
+			curapi="${api}&gcmcontinue=$(echo "${resp}" | jq '.continue.gcmcontinue')"
+		else
+			break
+		fi
+	done
+	${progress} && printf "\r%d pages of API results.\n" "${page}"
+fi
+
+if ${search}; then
+	${progress} && printf "Scraping search page...\n"
+
+	query="https://commons.wikimedia.org/w/index.php?title=Special:Search&limit=500&fulltext=1&ns0=1&ns6=1&ns12=1&ns14=1&ns100=1&ns106=1&search=%22$(echo "$*" | tr ' _' '+')%22${queries}"
+	ofs=0
+	cursearch="${query}&offset=${ofs}"
+
+	while true; do
+		${progress} && printf "\rResult set %d..." "${ofs}"
+
+		resp="$(curl -A "${useragent}" -s "${cursearch}")"
+		if echo "${resp}" | grep -q "There were no results matching the query."; then
+			break
+		else
+			urls="${urls} $(echo "${resp}" |
+				xmllint --format --nowarning --recover - 2>/dev/null |
+				sed -rn 's|<img\s+(alt.*)?\s*src="(https?://upload.wikimedia.org[^"]*)".*>|\2|p' |
+				sed -rn 's|(https?://upload.wikimedia.org/wikipedia/commons)/thumb/([^/]+/[^/]+/[^/]+)/.*$|\1/\2|p')"
+			ofs=$((ofs + 500))
+			cursearch="${query}&offset=${ofs}"
+		fi
+	done
+	${progress} && printf "\rOver %d URLs found.\n" "${ofs}"
+fi
+
+mkdir -p "${outdir}"
+
+if ${category} || ${search}; then
+	echo "${urls}" | tr ' ' "\n" | sort -u > "${outdir}/_URLS.txt"
+	${progress} && printf "Full list of URIs output to %s.\n" "${outdir}/_URLS.txt"
+fi
+
+if ${resume}; then
+	urls="$(cat "${resumefile}")"
+fi
+
+${progress} && printf "Downloading approximately %d URIs...\n" "$(echo "${urls}" | wc -w)"
+cur=0
+for url in ${urls}; do
+	${progress} && printf "\rDownloading URI %d..." "${cur}"
+	cur=$((cur + 1))
+	# FIXME: remove /dev/null pipe when SSL_INIT debug statement is removed from GNU wget
+	wget -U "${useragent}" -q -nc --directory-prefix="${outdir}" "${url}" > /dev/null 2>&1
+done
+${progress} && printf "\r%d URIs downloaded.   \n" "${cur}"
+
+rm "${outdir}/_URLS.txt"

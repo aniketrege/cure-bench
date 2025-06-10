@@ -1,0 +1,51 @@
+Category,Region,Item,Continent,# Prolific Workers,Wikimedia_Category,Global North/South
+Rice_Dish,Costa Rica,Gallo pinto,North_America,19,Gallo pinto,Global South
+Rice_Dish,Peru,Arroz chaufa,South_America,68,Arroz chaufa,Global South
+Rice_Dish,Bangladesh,Panta Bhat,Asia,162,Panta,Global South
+Rice_Dish,Japan,Omurice,Asia,169,Omurice,Global North
+Rice_Dish,Venezuela,Pabellón criollo,South_America,352,Pabellón criollo,Global South
+Rice_Dish,India,Chicken Biryani,Asia,1218,Chicken biryani,Global South
+Rice_Dish,Nigeria,Jollof rice,Africa,1286,Jollof rice,Global South
+Rice_Dish,Spain,Paella,Europe,1940,Paella in Spain,Global North
+Rice_Dish,Italy,Risotto,Europe,3212,Risotto,Global North
+Rice_Dish,United States,Jambalaya,North_America,78134,Jambalaya,Global North
+Noodle_Dish,Thailand,Pad Thai,Asia,49,Pad Thai,Global South
+Noodle_Dish,Peru,Tallarín saltado,South_America,68,Tallarín saltado,Global South
+Noodle_Dish,Malaysia,Mee rebus,Asia,208,Mee rebus,Global South
+Noodle_Dish,Indonesia,Mie goreng,Asia,228,Mie goreng,Global South
+Noodle_Dish,Korea,Jajangmyeon,Asia,275,Jajangmyeon,Global North
+Noodle_Dish,China,Hokkien mee,Asia,632,Hokkien mee,Global South
+Noodle_Dish,Spain,Fideuà,Europe,1940,Fideuà,Global North
+Noodle_Dish,Italy,Cacio e pepe,Europe,3212,Cacio e pepe,Global North
+Noodle_Dish,United States,Spaghetti with meatballs,North_America,78134,Spaghetti with meatballs,Global North
+Noodle_Dish,United States,Saimin,North_America,78134,Saimin,Global North
+Fried_Dough,Tunisia,Bambalouni,Africa,49,Bambalouni,Global South
+Fried_Dough,Morocco,Sfenj,Africa,137,Sfenj,Global South
+Fried_Dough,Vietnam,Bánh xèo,Asia,395,Bánh xèo,Global South
+Fried_Dough,Philippines,Okoy,Asia,650,Okoy,Global South
+Fried_Dough,India,Kachori,Asia,1218,Kachori,Global South
+Fried_Dough,Mexico,Churros,North_America,2669,Churros,Global South
+Fried_Dough,Italy,Arancini,Europe,3212,Arancini,Global North
+Fried_Dough,France,Beignets,Europe,1653,Beignets,Global North
+Fried_Dough,South Africa,Vetkoek,Africa,10916,Vetkoek,Global South
+Fried_Dough,United States,Doughnuts,North_America,78134,Doughnuts,Global North
+Flatbread,Ethiopia,Injera,Africa,24,Injera,Global South
+Flatbread,Tunisia,Msemmen,Africa,49,Msemmen,Global South
+Flatbread,Colombia,Arepa,South_America,159,Arepas of Colombia,Global South
+Flatbread,Iran,Sangak,Asia,173,Sangak,Global South
+Flatbread,China,Shaobing,Asia,632,Shaobing,Global South
+Flatbread,Philippines,Kiping,Asia,650,Kiping,Global South
+Flatbread,Mexico,Tortilla,North_America,2669,Tortillas,Global South
+Flatbread,Italy,Focaccia,Europe,3212,Focaccia,Global North
+Flatbread,Australia,Damper (Food),Oceania,3219,Damper \(food\),Global North
+Flatbread,United Kingdom,Staffordshire oatcakes,Europe,43387,Staffordshire oatcakes,Global North
+Dumpling,Puerto Rico,Alcapurrias,North_America,137,Alcapurrias,Global South
+Dumpling,Ghana,Banku,Africa,198,Banku,Global South
+Dumpling,Indonesia,Jalangkote,Asia,228,Jalangkote;Kue pastel,Global South
+Dumpling,Egypt,Qatayef,Africa,241,Qatayef,Global South
+Dumpling,Slovenia,Idrijski žlikrofi,Europe,254,Idrijski žlikrofi,Global North
+Dumpling,Brazil,Coxinhas,South_America,503,Coxinhas,Global South
+Dumpling,India,Modak,Asia,1218,Modak,Global South
+Dumpling,Mexico,Corundas,South_America,2669,Corundas,Global South
+Dumpling,Poland,Pierogi,Europe,3813,Pierogi,Global North
+Dumpling,United States,Crab Rangoon,North_America,78134,Crab Rangoon,Global North
